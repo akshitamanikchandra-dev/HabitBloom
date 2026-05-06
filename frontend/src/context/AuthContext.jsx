@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
-import axios from 'axios';
+import api from '../utils/api.js';
 
 const AuthContext = createContext();
 
@@ -16,7 +16,6 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     if (token) {
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       fetchMe();
     } else {
       setLoading(false);
@@ -25,30 +24,27 @@ export const AuthProvider = ({ children }) => {
 
   const fetchMe = async () => {
     try {
-      const { data } = await axios.get('/api/auth/me');
+      const { data } = await api.get('/auth/me');
       setUser(data.user);
     } catch {
       localStorage.removeItem('habitbloom_token');
       setToken(null);
-      delete axios.defaults.headers.common['Authorization'];
     } finally {
       setLoading(false);
     }
   };
 
   const login = async (identifier, password) => {
-    const { data } = await axios.post('/api/auth/login', { identifier, password });
+    const { data } = await api.post('/auth/login', { identifier, password });
     localStorage.setItem('habitbloom_token', data.token);
-    axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
     setToken(data.token);
     setUser(data.user);
     return data;
   };
 
   const signup = async (formData) => {
-    const { data } = await axios.post('/api/auth/signup', formData);
+    const { data } = await api.post('/auth/signup', formData);
     localStorage.setItem('habitbloom_token', data.token);
-    axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
     setToken(data.token);
     setUser(data.user);
     return data;
@@ -56,7 +52,6 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     localStorage.removeItem('habitbloom_token');
-    delete axios.defaults.headers.common['Authorization'];
     setToken(null);
     setUser(null);
   };

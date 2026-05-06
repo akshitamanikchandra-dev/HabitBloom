@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
+const path = require('path');
 
 dotenv.config();
 
@@ -10,7 +11,7 @@ const app = express();
 // CORS — allow all origins in dev, restrict in prod
 app.use(cors({
   origin: process.env.NODE_ENV === 'production'
-    ? (process.env.CLIENT_URL || 'http://localhost:3000')
+    ? (process.env.CLIENT_URL || true)
     : true,
   credentials: true,
 }));
@@ -31,6 +32,17 @@ app.get('/api/health', (req, res) => {
     mongoState: mongoose.connection.readyState,
   });
 });
+
+// ── Serve frontend in production ────────────────────────────────────────────
+if (process.env.NODE_ENV === 'production') {
+  const frontendDist = path.join(__dirname, '..', 'frontend', 'dist');
+  app.use(express.static(frontendDist));
+
+  // SPA catch-all — any non-API route serves index.html (React Router)
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(frontendDist, 'index.html'));
+  });
+}
 
 // Global error handler — surfaces Mongoose errors properly
 app.use((err, req, res, next) => {

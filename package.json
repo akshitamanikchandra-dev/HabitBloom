@@ -1,0 +1,20 @@
+{
+  "name": "habitbloom",
+  "version": "1.0.0",
+  "description": "A kawaii habit tracker built with the MERN stack and Vite",
+  "scripts": {
+    "install:backend": "cd backend && npm install",
+    "install:frontend": "cd frontend && npm install",
+    "postinstall": "npm run install:backend && npm run install:frontend",
+    "build": "cd frontend && npm run build",
+    "start": "cd backend && node server.js",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev": "npm run dev:backend & npm run dev:frontend"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": ["habit-tracker", "mern", "vite", "react", "express", "mongodb"],
+  "license": "ISC"
+}
