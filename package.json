@@ -4,7 +4,7 @@
   "description": "A kawaii habit tracker built with the MERN stack and Vite",
   "scripts": {
     "install:backend": "cd backend && npm install",
-    "install:frontend": "cd frontend && npm install",
+    "install:frontend": "cd frontend && npm install --include=dev",
     "postinstall": "npm run install:backend && npm run install:frontend",
     "build": "cd frontend && npm run build",
     "start": "cd backend && node server.js",
